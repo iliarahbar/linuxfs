@@ -26,8 +26,15 @@ class Shell:
         buffer = input()
 
         args = buffer.split()
-
-        getattr(self, args[0])(args[1])       
+        if len(args) == 1:
+            getattr(self, args[0])()       
+        if len(args) == 2:
+            getattr(self, args[0])(args[1])       
+        if len(args) == 3:
+            getattr(self, args[0])(args[1], args[2])       
+        if len(args) == 4:
+            getattr(self, args[0])(args[1], args[2], args[3])       
+               
     
     def exec(self):
         while True:
