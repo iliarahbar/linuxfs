@@ -1,4 +1,4 @@
-import fs
+from kernel import *
 
 class Shell:
     def __init__(self):
@@ -7,17 +7,18 @@ class Shell:
         self.cwd = self.fs.root
 
     def prompt(self):
-        print(f"[{self.env[PWD]}]$ ", end = "")
+        t = int(time.time())
+        h = t // 3600 % 24
+        m = t // 60 % 60
+        print(f"[{h}:{m}] [{self.env['PWD']}] $ ", end = "")
     
     def parse(self):
-        prompt()
+        self.prompt()
 
         buffer = input()
 
         args = buffer.split()
     
-        print(args)
-
     def exec(self):
         while True:
             self.parse()
@@ -34,5 +35,5 @@ class Shell:
     def ls(self):
         pass
 
-s =shell()
+s = Shell()
 s.exec()

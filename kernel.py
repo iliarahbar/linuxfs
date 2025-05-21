@@ -1,4 +1,4 @@
-import sys
+import sys, time
 
 REG_FILE = 0b1000000000000000
 DIR_FILE = 0b0100000000000000
@@ -31,10 +31,10 @@ class Inode:
         elif (self.mode & DIR_FILE):
             self.content = {"." : self, ".." : self.par}
 
-        self.size = sys.getsizeof(content)
+        self.size = sys.getsizeof(self.content)
 
-        self.id = inode.count
-        inode.count += 1
+        self.id = Inode.count
+        Inode.count += 1
 
 
 class FS:
