@@ -1,6 +1,14 @@
 from kernel import *
 
 class Shell:
+    instance = None
+    def __new__(cls):
+        if cls.instance is None:
+            cls.instance = super(Shell, cls).__new__(cls)
+
+        return cls.instance
+        
+
     def __init__(self):
         self.env = {"PWD": "/"}
         self.fs = FS()
@@ -18,6 +26,8 @@ class Shell:
         buffer = input()
 
         args = buffer.split()
+
+        getattr(self, args[0])(args[1])       
     
     def exec(self):
         while True:
@@ -37,7 +47,7 @@ class Shell:
     
     def cd(self, path):
         pass
-    
+        
     def nwfiletxt(self, path):
         pass
     
@@ -61,6 +71,10 @@ class Shell:
     
     def rename(self, path, new_name):
         pass
-
+    
 s = Shell()
+print(s)
+s = Shell()
+print(s)
 s.exec()
+
