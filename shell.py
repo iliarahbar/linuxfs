@@ -23,16 +23,43 @@ class Shell:
         while True:
             self.parse()
 
-    def mkdir(self):
+    def mkdir(self, path, folder_name):
         pass
 
-    def touch(self):
-        pass
-
-    def cd(self):
+    def touch(self, path, file_name):
         pass
 
     def ls(self):
+        pass
+    
+    def rm(self, path):
+        pass
+    
+    def cd(self, path):
+        pass
+    
+    def nwfiletxt(self, path):
+        pass
+    
+    def appendtxt(self, path):
+        pass
+    
+    def editline(self, path, line, text):
+        pass
+    
+    def deline(self, path, line):
+        pass
+
+    def cat(self, cat):
+        pass
+
+    def mv(self, source_path, destination_path):
+        pass
+    
+    def cp(self, source_path, destination_path):
+        pass
+    
+    def rename(self, path, new_name):
         pass
 
 s = Shell()
