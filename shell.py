@@ -26,31 +26,40 @@ class Shell:
         buffer = input()
 
         args = buffer.split()
-        if len(args) == 1:
-            getattr(self, args[0])()       
-        if len(args) == 2:
-            getattr(self, args[0])(args[1])       
-        if len(args) == 3:
-            getattr(self, args[0])(args[1], args[2])       
-        if len(args) == 4:
-            getattr(self, args[0])(args[1], args[2], args[3])       
-               
+        if len(args) == 0:
+            continue
+        
+        getattr(self, args[0])(*args[1:])      
     
     def exec(self):
         while True:
             self.parse()
 
     def mkdir(self, path, folder_name):
-        pass
+        x = self.cwd
+        self.cd(path)
+        mkdir_fs(folder_name)   # it is system call
+        self.cd(x)
 
     def touch(self, path, file_name):
-        pass
+        x = self.cwd
+        self.cd(path)
+        touch_fs(folder_name)   # it is system call
+        self.cd(x)
 
     def ls(self):
         pass
     
     def rm(self, path):
-        pass
+        x = path.split('/')[-1]
+        y = path[:-1]
+        location = ''
+        for i in range(len(y)):
+            location += '/' + y[i]
+        cur_loc = self.path
+        self.cd(location)
+        delete_fs(x[-1])   # it is system call
+        self.cd(cur_loc)
     
     def cd(self, path):
         pass
