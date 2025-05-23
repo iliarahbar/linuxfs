@@ -62,10 +62,23 @@ class Shell:
         self.cd(cur_loc)
     
     def cd(self, path):
-        pass
-        
+        if path[0] == '/':
+            self.cwd = path
+        else:
+            self.cwd += path
+            
     def nwfiletxt(self, path):
-        pass
+        i = 1
+        new = ''
+        while :
+            self.cd(path)
+            x = self.ls()
+            new = 'New File' + str(i) + '.txt'
+            if not new in x:
+                break
+            i += 1
+        
+        self.touch(path, new)
     
     def appendtxt(self, path):
         pass
@@ -88,8 +101,6 @@ class Shell:
     def rename(self, path, new_name):
         pass
     
-s = Shell()
-print(s)
 s = Shell()
 print(s)
 s.exec()
