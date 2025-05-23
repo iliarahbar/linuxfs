@@ -1,3 +1,4 @@
+#!/bin/python3
 from kernel import Kernel
 import inspect, time
 
@@ -46,7 +47,7 @@ class Shell:
     def split_path(self, path):
         l = path.split('/')
         
-        return '/'.join(l[:-1]), l[:-1]
+        return '/'.join(l[:-1]), l[-1]
 
     def mkdir(self, path):
         dire, file = self.split_path(path)
@@ -59,20 +60,35 @@ class Shell:
     
     def rm(self, path):
         dire, file = self.split_path(path)
+        
+        try:
+            kernel.unlink(dire, file)
 
-    def touch(self, path, file_name):
-        self.cd(path)
-        touch_fs(folder_name)   # it is system call
-        self.cd(x)
+        except Exception as ex:
+            print(ex)
 
-    def ls(self):
-        pass
+    def touch(self, path):
+        dire, file = self.split_path(path)
+
+        try:
+            kernel.write(dire, file, "")
+
+        except Exception as ex:
+            print(ex)
+
+    def ls(self, path = '.'):
+        dire, file = self.split_path(path)
+
+        try:
+            dc = kernel.read(dire, file)
+
+            print(*dc.keys())
+
+        except Exception as ex:
+            print(ex)      
     
     def cd(self, path):
-        if path[0] == '/':
-            self.cwd = path
-        else:
-            self.cwd += path
+        kernel.chdir(path)
             
     def nwfiletxt(self, path):
         i = 1

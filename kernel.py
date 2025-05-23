@@ -75,7 +75,6 @@ class Kernel:
             cur = self.cwd
 
         for dire in l:
-        {
             if not dire in cur.content:
                 raise Exception(f"Direcotry '{dire}' not found")
 
@@ -83,7 +82,6 @@ class Kernel:
                 raise Exception(f"'{dire}' is not a direcotry")
 
             cur = cur.content[dire]
-        }
 
         return cur
 
@@ -91,10 +89,40 @@ class Kernel:
         ind = self.get_inode(dire)
 
         if file in ind.content:
-            raise Exception(f"'{file}' ")
+            raise Exception(f"'{file}' exists")
 
+        ind.content[file] = Inode(file, ind, mode = DIR_FILE | DEF_DIR_PERM)
 
-        
-        
+    def unlink(self, dire, file):
+        ind = self.get_inode(dire)
 
+        if not file in ind.content:
+            raise Exception(f"File '{dire}' not found")
+
+        ind.content.pop(file)
+
+    def write(self, dire, file, data):
+        ind = self.get_inode(dire)
+
+        if not file in ind.content:
+            ind.content[file] = Inode(file, ind)
+
+        f = ind.content[file]
+
+        f.content = data
+
+    def read(self, dire, file):
+        ind = self.get_inode(dire)
+
+        if not file in ind.content:
+            raise Exception(f"File '{dire}' not found")
+
+        f = ind.content[file]
+
+        return f.content
+
+    def chdir(self, path):
+        ind = self.get_inode(path)
+
+        self.cwd = path
 
