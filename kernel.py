@@ -14,7 +14,8 @@ DEF_DIR_PERM = (R_PERM | W_PERM | X_PERM) * U_PERM | (R_PERM | X_PERM) * G_PERM 
 class Inode:
     count = 0
 
-    def __init__(self, par = None, mode = REG_FILE | DEF_REG_PERM):
+    def __init__(self, name = "", par = None, mode = REG_FILE | DEF_REG_PERM):
+        self.name = name
         self.par = par
         self.mode = mode
         self.uid = 1
@@ -41,5 +42,59 @@ class FS:
     def __init__(self):
         self.root = Inode(mode = DIR_FILE | DEF_DIR_PERM)
         self.root.par = self.root
+
+class Kernel:
+    def __init__(self):
+        self.fs = FS()
+        self.cwd = self.fs.root
+
+    def pwd(self):
+        p = [self.cwd.name]
+
+        d = self.cwd
+
+        while (d.par != d):
+            d = d.par
+            p.append(d.name)
+
+        p.reverse()
+
+        if (len(p) == 1):
+            p.append('')
+
+        return '/'.join(p)
+
+    def get_inode(self, path):
+        l = path.split('/')
+
+        if (l[0] == ''):
+            cur = self.fs.root
+            l = l[1:]
+
+        else:
+            cur = self.cwd
+
+        for dire in l:
+        {
+            if not dire in cur.content:
+                raise Exception(f"Direcotry '{dire}' not found")
+
+            if cur.content[dire] & DIR_FILE == 0:
+                raise Exception(f"'{dire}' is not a direcotry")
+
+            cur = cur.content[dire]
+        }
+
+        return cur
+
+    def mkdir_at(self, dire, file):
+        ind = self.get_inode(dire)
+
+        if file in ind.content:
+            raise Exception(f"'{file}' ")
+
+
+        
+        
 
 

@@ -1,4 +1,7 @@
-from kernel import *
+from kernel import Kernel
+import inspect, time
+
+kernel = Kernel()
 
 class Shell:
     instance = None
@@ -8,17 +11,11 @@ class Shell:
 
         return cls.instance
         
-
-    def __init__(self):
-        self.env = {"PWD": "/"}
-        self.fs = FS()
-        self.cwd = self.fs.root
-
     def prompt(self):
         t = int(time.time())
         h = t // 3600 % 24
         m = t // 60 % 60
-        print(f"[{h}:{m}] [{self.env['PWD']}] $ ", end = "")
+        print(f"[{h}:{m}] [{kernel.pwd()}] $ ", end = "")
     
     def parse(self):
         self.prompt()
@@ -27,39 +24,49 @@ class Shell:
 
         args = buffer.split()
         if len(args) == 0:
-            continue
+            return 0
         
-        getattr(self, args[0])(*args[1:])      
+        try:
+            func = getattr(Shell.instance, args[0])
+            
+            func(*args[1:])
+
+        except AttributeError:
+            print(f"Command '{args[0]}' not found")
+
+        except TypeError:
+            req = inspect.getfullargspec(func)
+
+            print(f"""Command '{args[0]}' takes {len(req[0]) - 1} arguments: '{"', '".join(req[0][1:])}'""")
     
     def exec(self):
         while True:
             self.parse()
 
-    def mkdir(self, path, folder_name):
-        x = self.cwd
-        self.cd(path)
-        mkdir_fs(folder_name)   # it is system call
-        self.cd(x)
+    def split_path(self, path):
+        l = path.split('/')
+        
+        return '/'.join(l[:-1]), l[:-1]
+
+    def mkdir(self, path):
+        dire, file = self.split_path(path)
+        
+        try:
+            kernel.mkdir_at(dire, file)
+
+        except Exception as ex:
+            print(ex)
+    
+    def rm(self, path):
+        dire, file = self.split_path(path)
 
     def touch(self, path, file_name):
-        x = self.cwd
         self.cd(path)
         touch_fs(folder_name)   # it is system call
         self.cd(x)
 
     def ls(self):
         pass
-    
-    def rm(self, path):
-        x = path.split('/')[-1]
-        y = path[:-1]
-        location = ''
-        for i in range(len(y)):
-            location += '/' + y[i]
-        cur_loc = self.path
-        self.cd(location)
-        delete_fs(x[-1])   # it is system call
-        self.cd(cur_loc)
     
     def cd(self, path):
         if path[0] == '/':
@@ -70,7 +77,7 @@ class Shell:
     def nwfiletxt(self, path):
         i = 1
         new = ''
-        while :
+        while 1:
             self.cd(path)
             x = self.ls()
             new = 'New File' + str(i) + '.txt'
@@ -102,6 +109,5 @@ class Shell:
         pass
     
 s = Shell()
-print(s)
 s.exec()
 
