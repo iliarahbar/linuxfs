@@ -139,3 +139,9 @@ class Kernel:
 
         self.cwd = ind
 
+    def renameat(self, spath, sfile, dpath, dfile):
+        pass
+
+    def dup(self, spath, sfile, dpath, dfile):
+        pass
+
