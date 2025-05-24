@@ -1,6 +1,6 @@
 #!/bin/python3
 from kernel import Kernel
-import inspect, time
+import inspect, time, os
 
 kernel = Kernel()
 
@@ -39,15 +39,25 @@ class Shell:
             req = inspect.getfullargspec(func)
 
             print(f"""Command '{args[0]}' takes {len(req[0]) - 1} arguments: '{"', '".join(req[0][1:])}'""")
+
+    def editor(self):
+        os.system("vim buff")
+
+        with open('buff') as b:
+            data = b.read()
+
+        os.system("rm buff")
+
+        return data
     
     def exec(self):
         while True:
             self.parse()
 
     def split_path(self, path):
-        l = path.split('/')
-        
-        return '/'.join(l[:-1]), l[-1]
+        l = path.strip('/').split('/')
+
+        return ('/' if path[0] == '/' else '') + '/'.join(l[:-1]), l[-1]
 
     def mkdir(self, path):
         dire, file = self.split_path(path)

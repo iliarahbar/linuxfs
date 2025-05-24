@@ -65,11 +65,17 @@ class Kernel:
         return '/'.join(p)
 
     def get_inode(self, path):
-        l = path.split('/')
+        l = path.strip('/').split('/')
 
-        if (l[0] == ''):
+        if (len(path) == 0):
+            cur = self.cwd
+            l = []
+
+        elif (path[0] == '/'):
             cur = self.fs.root
-            l = l[1:]
+
+            if (l[0] == ''):
+                l = l[1:]
 
         else:
             cur = self.cwd
@@ -107,8 +113,8 @@ class Kernel:
         if not file in ind.content:
             ind.content[file] = Inode(file, ind)
 
-        if ind.content[dire].mode & DIR_FILE != 0:
-                raise Exception(f"'{dire}' is a direcotry")
+        if ind.content[file].mode & DIR_FILE != 0:
+                raise Exception(f"'{file}' is a direcotry")
 
         f = ind.content[file]
 
