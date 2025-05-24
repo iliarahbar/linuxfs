@@ -88,32 +88,95 @@ class Shell:
             print(ex)      
     
     def cd(self, path):
-        kernel.chdir(path)
+        try:
+            kernel.chdir(path)
+
+        except Exception as ex:
+            print(ex)     
             
     def nwfiletxt(self, path):
-        i = 1
-        new = ''
-        while 1:
-            self.cd(path)
-            x = self.ls()
-            new = 'New File' + str(i) + '.txt'
-            if not new in x:
-                break
-            i += 1
+        dire, file = self.split_path(path)
         
-        self.touch(path, new)
-    
+        data = self.editor()
+
+        try:
+            kernel.write(dire, file, data)
+
+        except Exception as ex:
+            print(ex)     
+
     def appendtxt(self, path):
-        pass
+        dire, file = self.split_path(path)
+        
+        data = self.editor()
+
+        try:
+            kernel.write(dire, file, data, append=1)
+
+        except Exception as ex:
+            print(ex)    
     
-    def editline(self, path, line, text):
-        pass
+    def editline(self, path, line, *text):
+        dire, file = self.split_path(path)
+
+        try:
+            data = kernel.read(dire, file)
+
+            l = data.split('\n')
+
+            if (len(l) < line):
+                print("line {line} not found, file {file} has {len(l}) lines")
+
+            else:
+                l[line-1] = ' '.join(text)
+
+                newdata = '\n'.join(l)
+
+                try:
+                    kernel.write(dire, file, newdata)
+
+                except Exception as ex:
+                    print(ex) 
+
+        except Exception as ex:
+            print(ex)
     
     def deline(self, path, line):
-        pass
+        dire, file = self.split_path(path)
+
+        try:
+            data = kernel.read(dire, file)
+
+            l = data.split('\n')
+
+            if (len(l) < line):
+                print("line {line} not found, file {file} has {len(l}) lines")
+
+            else:
+                l = l[:line] + l[line+1:]
+
+                newdata = '\n'.join(l)
+
+                try:
+                    kernel.write(dire, file, newdata)
+
+                except Exception as ex:
+                    print(ex) 
+
+        except Exception as ex:
+            print(ex)
 
     def cat(self, cat):
-        pass
+        dire, file = self.split_path(path)
+
+        try:
+            data = kernel.read(dire, file)
+
+            print(data)
+
+        except Exception as ex:
+            print(ex)
+
 
     def mv(self, source_path, destination_path):
         pass

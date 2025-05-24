@@ -78,7 +78,7 @@ class Kernel:
             if not dire in cur.content:
                 raise Exception(f"Direcotry '{dire}' not found")
 
-            if cur.content[dire] & DIR_FILE == 0:
+            if cur.content[dire].mode & DIR_FILE == 0:
                 raise Exception(f"'{dire}' is not a direcotry")
 
             cur = cur.content[dire]
@@ -101,15 +101,22 @@ class Kernel:
 
         ind.content.pop(file)
 
-    def write(self, dire, file, data):
+    def write(self, dire, file, data, append = 0):
         ind = self.get_inode(dire)
 
         if not file in ind.content:
             ind.content[file] = Inode(file, ind)
 
+        if ind.content[dire].mode & DIR_FILE != 0:
+                raise Exception(f"'{dire}' is a direcotry")
+
         f = ind.content[file]
 
-        f.content = data
+        if (append):
+            f.content += data
+
+        else:
+            f.content = data
 
     def read(self, dire, file):
         ind = self.get_inode(dire)
@@ -124,5 +131,5 @@ class Kernel:
     def chdir(self, path):
         ind = self.get_inode(path)
 
-        self.cwd = path
+        self.cwd = ind
 
