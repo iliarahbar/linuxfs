@@ -1,4 +1,4 @@
-import sys, time
+import sys, time, copy
 
 REG_FILE = 0b1000000000000000
 DIR_FILE = 0b0100000000000000
@@ -139,9 +139,26 @@ class Kernel:
 
         self.cwd = ind
 
-    def renameat(self, spath, sfile, dpath, dfile):
-        pass
+    def renameat(self, sdir, sfile, ddir, dfile):
+        sind = self.get_inode(sdir)
+        dind = self.get_inode(ddir)
 
-    def dup(self, spath, sfile, dpath, dfile):
-        pass
+        if not sfile in sind.content:
+            raise Exception(f"File '{dire}' not found")
 
+        dind.content[dfile] = sind.content[sfile]
+
+        sind.content.pop(sfile)
+
+        dind.content[dfile].name = dfile
+
+    def dup(self, sdir, sfile, ddir, dfile):
+        sind = self.get_inode(sdir)
+        dind = self.get_inode(ddir)
+
+        if not sfile in sind.content:
+            raise Exception(f"File '{dire}' not found")
+
+        dind.content[dfile] = copy.deepcopy(sind.content[sfile])
+
+        dind.content[dfile].name = dfile

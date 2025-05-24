@@ -57,7 +57,7 @@ class Shell:
     def split_path(self, path):
         l = path.strip('/').split('/')
 
-        return ('/' if path[0] == '/' else '') + '/'.join(l[:-1]), l[-1]
+        return ('/' if path[0] == '/' else '') + '/'.join(l[:-1]), ('.' if l[-1] == '' else l[-1])
 
     def mkdir(self, path):
         dire, file = self.split_path(path)
@@ -176,26 +176,47 @@ class Shell:
         except Exception as ex:
             print(ex)
 
-    def cat(self, cat):
+    def cat(self, path):
         dire, file = self.split_path(path)
 
         try:
             data = kernel.read(dire, file)
 
-            print(data)
+            print(data, end = "")
 
         except Exception as ex:
             print(ex)
 
 
     def mv(self, source_path, destination_path):
-        pass
+        sdir, sfile = self.split_path(source_path)
+        ddir, dfile = self.split_path(destination_path)
+        
+        try:
+            kernel.renameat(sdir, sfile, ddir, dfile)
+
+        except Exception as ex:
+            print(ex)
     
     def cp(self, source_path, destination_path):
-        pass
-    
+        sdir, sfile = self.split_path(source_path)
+        ddir, dfile = self.split_path(destination_path)
+        
+        try:
+            kernel.dup(sdir, sfile, ddir, dfile)
+
+        except Exception as ex:
+            print(ex)
+
     def rename(self, path, new_name):
-        pass
+        sdir, sfile = self.split_path(path)
+        
+        try:
+            kernel.renameat(sdir, sfile, sdir, new_name)
+
+        except Exception as ex:
+            print(ex)
+   
     
 s = Shell()
 s.exec()
